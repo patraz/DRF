@@ -7,6 +7,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
+
 from .models import Post
 from .serializers import PostSerializer
 
@@ -21,7 +23,26 @@ class PostView(APIView):
         serializer = PostSerializer(queryset, many=True)
         # if serializer.is_valid():
         return Response(serializer.data)
-    
+    def post(self, request, *args, **kwargs):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def put(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        post.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+
+
 @csrf_exempt
 def post_list(request):
     if request.method == 'GET':
