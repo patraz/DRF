@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 
+from rest_framework import mixins, generics
+
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
@@ -82,3 +84,17 @@ def post_detail(request, pk):
 def post_list(request):
     if request.method == 'GET':
         pass
+
+
+
+class PostMixinListView(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin, 
+    generics.GenericAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request,*args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
