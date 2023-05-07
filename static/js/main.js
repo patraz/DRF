@@ -1,4 +1,17 @@
-console.log('doopa')
+
+const form = document.querySelector('#postForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = getElementById('title')
+    const content= getElementById('content')
+    const author= getElementById('author')
+    console.log(e);
+})
+const submitButton = document.querySelector('#submmitButton')
+submitButton.addEventListener('click', e => {
+    console.log(e)
+})
+
+
 function getPostList(){
     fetch('/api/posts/')
     .then(res => res.json())
