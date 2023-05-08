@@ -5,8 +5,10 @@ const form = document.querySelector('#postForm').addEventListener('submit', e =>
     const content= document.getElementById('content').value;
     const author= document.getElementById('author').value;
     console.log(title);
-    console.log('{{csrf_token}}')
     createPost(title, content, author);
+    title.value = '';
+    content.value = '';
+    author.value = '';
 })
 
 const submitButton = document.querySelector('#submitButton')
@@ -32,10 +34,17 @@ function createPost(title, content, author){
     })
 }
 
+function clearChildren(node) {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
+}
+
 function getPostList(){
     fetch('/api/posts/')
     .then(res => res.json())
     .then(data => {
+        clearChildren(root)
         renderPosts(data)
     })
     .catch(err => {
@@ -61,7 +70,11 @@ function renderPost(post) {
     const root = document.getElementById('root')
     const div = createNode('div');
     div.className = 'post-item';
+
+    const link = createNode('a')
+    link.href = `/posts/${post.id}/`
     const title = createNode('h2');
+    append(link, title)
     const content = createNode('p');
     const publishDate = createNode('span')
     const lastUpdated = createNode('span')
@@ -73,7 +86,7 @@ function renderPost(post) {
     publishDate.innerText = `Published: ${new Date(post.publish_date).toUTCString()}`;
     lastUpdated.innerText = `Last Updated: ${new Date(post.updated).toUTCString()}`;
 
-    append(div, title);
+    append(div, link);
     append(div, content);
     append(div, publishDate);
     append(div, lastUpdated);

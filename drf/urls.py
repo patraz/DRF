@@ -20,13 +20,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from posts.views import home
+from posts.views import home, post_detail
 
 urlpatterns = [
     path("", home, name="home"),
     path("admin/", admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/posts/', include('posts.urls'))
+    path('api/posts/', include('posts.urls')),
+    path('posts/<pk>/', post_detail, name='post')
 ]
 
 if settings.DEBUG:
