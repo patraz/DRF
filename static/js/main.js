@@ -1,16 +1,36 @@
 
 const form = document.querySelector('#postForm').addEventListener('submit', e => {
     e.preventDefault();
-    const title = getElementById('title')
-    const content= getElementById('content')
-    const author= getElementById('author')
-    console.log(e);
+    const title = document.getElementById('title').value;
+    const content= document.getElementById('content').value;
+    const author= document.getElementById('author').value;
+    console.log(title);
+    console.log('{{csrf_token}}')
+    createPost(title, content, author);
 })
-const submitButton = document.querySelector('#submmitButton')
+
+const submitButton = document.querySelector('#submitButton')
+
 submitButton.addEventListener('click', e => {
     console.log(e)
 })
 
+function createPost(title, content, author){
+    const data = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',            
+        },
+        body: JSON.stringify({
+            title, content, author
+        })
+    }
+    fetch('/api/posts/create/', data)
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+    })
+}
 
 function getPostList(){
     fetch('/api/posts/')

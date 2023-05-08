@@ -16,3 +16,12 @@ class PostSerializer(serializers.ModelSerializer):
         )
     def get_author(self, obj):
         return obj.author.user.username
+    
+class PostCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'title',
+            'content',
+            'author'
+        )
